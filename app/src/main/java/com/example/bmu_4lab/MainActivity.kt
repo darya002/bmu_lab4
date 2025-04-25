@@ -8,7 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricPrompt
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
@@ -16,6 +26,7 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.android.gms.auth.api.identity.SignInClient
 import java.util.concurrent.Executor
+
 
 class MainActivity : FragmentActivity() {
     private lateinit var oneTapClient: SignInClient
@@ -84,7 +95,14 @@ class MainActivity : FragmentActivity() {
         setContent {
             MaterialTheme {
                 SignInScreen(
-                    onSignInClick = {
+                    onSignInClick = { username, password ->
+                        if (username == "test" && password == "password") {
+                            Toast.makeText(this, "Вход выполнен!", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show()
+                        }
+                    },
+                    onGoogleSignInClick = {
                         oneTapClient.beginSignIn(signInRequest)
                             .addOnSuccessListener { result ->
                                 oneTapLauncher.launch(
@@ -94,11 +112,13 @@ class MainActivity : FragmentActivity() {
                             .addOnFailureListener { e ->
                                 Log.e("ONE_TAP", "Sign-in failed: ${e.localizedMessage}")
                             }
+                    },
+                    onBiometricSignInClick = {
+                        authenticateAndShowToken()
                     }
                 )
             }
         }
     }
 }
-
 
