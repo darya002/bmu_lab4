@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,6 +63,8 @@ dependencies {
     implementation(libs.androidx.security.crypto)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-
+    implementation(libs.androidx.biometric)
+    implementation(libs.androidx.biometric.v120alpha05)
+    implementation(libs.androidx.security.crypto.v110alpha06)
 }
 apply(plugin = "com.google.gms.google-services")

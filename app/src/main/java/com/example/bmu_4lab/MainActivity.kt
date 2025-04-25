@@ -3,21 +3,25 @@ package com.example.bmu_4lab
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.biometric.BiometricPrompt
 import androidx.compose.material3.*
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInCredential
 import com.google.android.gms.auth.api.identity.SignInClient
+import java.util.concurrent.Executor
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private lateinit var oneTapClient: SignInClient
     private lateinit var signInRequest: BeginSignInRequest
 
-    private val oneTapLauncher =
+    val oneTapLauncher =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 try {
@@ -26,7 +30,14 @@ class MainActivity : ComponentActivity() {
                     val name    = credential.displayName
                     val email   = credential.id
                     Log.d("ONE_TAP", "User: $name, email: $email, idToken: $idToken")
-                    // TODO: тут переход к биометрии / сохранению токена
+
+                    if (idToken != null) {
+                        SecureStorage.saveToken(this, idToken)
+                        authenticateAndShowToken()
+                    } else {
+                        Toast.makeText(this, "Token is null", Toast.LENGTH_SHORT).show()
+                    }
+
                 } catch (e: Exception) {
                     Log.e("ONE_TAP", "Error getting credential: ${e.localizedMessage}")
                 }
@@ -35,10 +46,30 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+    private fun authenticateAndShowToken() {
+        val executor: Executor = ContextCompat.getMainExecutor(this)
+
+        val biometricPrompt = BiometricPrompt(this@MainActivity as FragmentActivity, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                    super.onAuthenticationSucceeded(result)
+                    val token = SecureStorage.getToken(this@MainActivity)
+                    Toast.makeText(this@MainActivity, "Token: $token", Toast.LENGTH_LONG).show()
+                }
+            })
+
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Биометрическая аутентификация")
+            .setSubtitle("Подтвердите отпечаток для доступа к токену")
+            .setNegativeButtonText("Отмена")
+            .build()
+
+        biometricPrompt.authenticate(promptInfo)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. Инициализируем клиент и запрос
         oneTapClient = Identity.getSignInClient(this)
         signInRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
@@ -50,7 +81,6 @@ class MainActivity : ComponentActivity() {
             )
             .build()
 
-        // 2. UI на Compose
         setContent {
             MaterialTheme {
                 SignInScreen(
