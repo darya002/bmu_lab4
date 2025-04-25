@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "41853559789",
+    "project_id": "bmu-4lab",
+    "storage_bucket": "bmu-4lab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:41853559789:android:ddbf5412eed094eb3e3de4",
+        "android_client_info": {
+          "package_name": "com.example.bmu_4lab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "41853559789-2c7j1ldjl9hkpqbm2qv5rsfslpuf06nh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bmu_4lab",
+            "certificate_hash": "3658ac078eb6e8e1d7b3ea2a01a2a14b36dee2fd"
+          }
+        },
+        {
+          "client_id": "41853559789-slf4t1lvphllep3dbkade66o5r76nfpl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApQmA3I_8Z2dsTmXlA7103jmaBDVc-cCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "41853559789-slf4t1lvphllep3dbkade66o5r76nfpl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
